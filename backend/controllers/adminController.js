@@ -14,7 +14,17 @@ exports.adminLogin = async (req, res) => {
   }
 
   const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
-  res.json({ token });
+  
+  // Return both token and user data (excluding password)
+  const userData = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    preferences: user.preferences
+  };
+  
+  res.json({ token, user: userData });
 };
 
 exports.createProduct = async (req, res) => {
