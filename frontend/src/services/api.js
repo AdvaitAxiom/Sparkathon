@@ -27,6 +27,8 @@ export const userAPI = {
   login: (credentials) => api.post('/user/login', credentials),
   getCart: () => api.get('/user/cart'),
   addToCart: (productData) => api.post('/user/cart', productData),
+  updateProfile: (profileData) => api.put('/user/profile', profileData),
+  updatePassword: (passwordData) => api.put('/user/password', passwordData),
 };
 
 // Admin related API calls

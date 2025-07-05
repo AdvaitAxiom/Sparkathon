@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import { userAPI } from '../services/api';
 import {
   Box,
   Container,
@@ -50,7 +50,7 @@ const DELIVERY_SPEEDS = [
 ];
 
 const Profile = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, updateUserData } = useAuth();
   const [tabValue, setTabValue] = useState(0);
   
   // Profile form state
@@ -126,12 +126,15 @@ const Profile = () => {
       setLoading(true);
       
       // Update profile in backend
-      await axios.put('http://localhost:5000/api/user/profile', profileData);
+      const response = await userAPI.updateProfile(profileData);
+      
+      // Update user data in context and localStorage
+      updateUserData(response.data.user);
       
       setSuccess('Profile updated successfully!');
     } catch (err) {
       console.error('Error updating profile:', err);
-      setError('Failed to update profile. Please try again.');
+      setError(err.response?.data?.message || 'Failed to update profile. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -151,7 +154,7 @@ const Profile = () => {
       setLoading(true);
       
       // Update password in backend
-      await axios.put('http://localhost:5000/api/user/password', {
+      await userAPI.updatePassword({
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword
       });
